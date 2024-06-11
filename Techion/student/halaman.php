@@ -1,10 +1,34 @@
+<?php
+session_start();
+include("../koneksi.php");
+
+if(isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+    $query = "SELECT name FROM tbl_users WHERE email = '$email'";
+    $result = mysqli_query($koneksi, $query);
+    $user = mysqli_fetch_assoc($result);
+    $namaPengguna = $user['name'];
+}
+
+if(isset($_GET['logout'])) {
+    session_destroy(); 
+    header("Location: ../index.html"); 
+    exit();
+}
+
+if (isset($_SESSION['flash_message'])) {
+    echo "<script>alert('" . $_SESSION['flash_message'] . "');</script>";
+    unset($_SESSION['flash_message']);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Techion</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="student.css">
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -23,7 +47,10 @@
                     <li><a href="#videocontent">Video Content</a></li>
                     <li><a href="#course">Course</a></li>
                     <li><a href="#discforum">Discussion Forum</a></li>
-                    <li><a href="SignUp.html" class="tbl-biru">Sign Up</a></li>
+                    <?php if(isset($namaPengguna)) { ?>
+                        <li><a href="#" class="tbl-biru"><?php echo $namaPengguna; ?></a></li>
+                        <li><a href="?logout=true" class="logout-ya">Logout</a></li> 
+                    <?php } ?>
                 </ul>
             </div>
         </div>
@@ -52,7 +79,7 @@
             <img src="https://img.freepik.com/free-vector/online-learning-isometric-concept_1284-17947.jpg?size=626&ext=jpg&ga=GA1.2.1769275626.1605867161"/>
         </section>
 
-        <!-- untuk top courde -->
+        <!-- untuk top course -->
         <section id="course">
             <div class="tengah">
                 <div class="kolom">
